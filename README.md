@@ -1,4 +1,6 @@
-# elixir-livebook-azure-demo
+# `chgeuer/elixir-livebook-azure-demo`
+
+A small demo to show how to access Azure from Elixir.
 
 Launch livebook
 
