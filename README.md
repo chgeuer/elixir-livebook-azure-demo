@@ -1,6 +1,12 @@
 # `chgeuer/elixir-livebook-azure-demo`
 
-A small demo to show how to access Azure from Elixir.
+A small demo to show how to access Azure from Elixir:
+
+![arch](docs/arch.png)
+
+
+
+
 
 Launch livebook
 
@@ -9,5 +15,5 @@ curl https://raw.githubusercontent.com/chgeuer/elixir-livebook-azure-demo/main/r
 ```
 
 ```
-https://raw.githubusercontent.com/chgeuer/elixir-livebook-azure-demo/main/livebook.md
+https://raw.githubusercontent.com/chgeuer/elixir-livebook-azure-demo/main/azure.livemd
 ```
