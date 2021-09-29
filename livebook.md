@@ -4,15 +4,6 @@
 
 We'll be using the Elixir programming language, running on the Erlang virtual machine (BEAM), in a docker container, using Elixir's web framework Phoenix, in an application called "LiveBook" ([`livebook-dev/livebook`](https://github.com/livebook-dev/livebook), exposing Elixir through a notebook interface.
 
-```bash
-targetFolder=/mnt/c/Users/chgeuer/Desktop/storagedemo
-mkdir "${targetFolder}"
-
-cp "/mnt/c/Users/chgeuer/Videos/This Is Spinal Tap - These go to 11.mpg-KOO5S4vxi0o.mp4" "${targetFolder}/TheseGoToEleven.mp4"
-
-docker run -p 8080:8080 --pull always -u "$(id -u):$(id -g)" -v "${targetFolder}:/data" "livebook/livebook"
-```
-
 ## Just enough Elixir to understand the code
 
 ```elixir
