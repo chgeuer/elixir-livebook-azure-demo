@@ -1,5 +1,7 @@
 # Talking to Azure Storage and the ARM API - From Erlang
 
+Full demo on Github: [`chgeuer/elixir-livebook-azure-demo`](https://github.com/chgeuer/elixir-livebook-azure-demo)
+
 ## Just enough Elixir to understand the code
 
 ```elixir
