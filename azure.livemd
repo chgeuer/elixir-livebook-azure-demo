@@ -49,21 +49,20 @@ from Github, and all packages (and their dependencies) get compiled.
 <!-- livebook:{"disable_formatting":true} -->
 
 ```elixir
-sparse = fn (k,v) ->
-  { k, github: "chgeuer/ex_microsoft_azure_management",
-       sparse: "Microsoft.Azure.Management.#{v}",
-       app: false
-  }
+armSdk = fn (k,v) -> { k,
+  github: "chgeuer/ex_microsoft_azure_management",
+  sparse: "Microsoft.Azure.Management.#{v}",
+  app: false }
 end
 
-Mix.install([
+[
   {:azure_utils, github: "chgeuer/ex_microsoft_azure_utils", app: false},
-  # sparse.(:arm_compute, "Compute"),
-  sparse.(:arm_resources, "Resources"),
-  sparse.(:arm_subscription, "Subscription"),
-  sparse.(:arm_storage, "Storage"),
+  armSdk.(:arm_resources, "Resources"),
+  armSdk.(:arm_subscription, "Subscription"),
+  armSdk.(:arm_storage, "Storage"),
   {:azure_storage, github: "chgeuer/ex_microsoft_azure_storage", app: false}
-])
+]
+|> Mix.install()
 ```
 
 The `alias` section is similar to `using` or import statements, as we can omit parts of the module names.
