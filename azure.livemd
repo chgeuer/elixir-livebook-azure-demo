@@ -407,9 +407,18 @@ blobs
   * sign-in just with a magic link like [`https://www.keybr.com/login/yIkX1rpIDZ`](https://www.keybr.com/login/yIkX1rpIDZ)
 * [Monkeytype.com](https://monkeytype.com/) - More interesting texts, love the "Quote" mode
 
+#### Competitive Learning pages
+
+* [10FastFingers.com](https://10fastfingers.com/)
+* [NitroType.com](https://www.nitrotype.com/race)
+* [TypeRacer.com](https://play.typeracer.com/)
+* Let's play together
+
 #### Keyboard configuration
 
 Keyboard appears 'regular' on Windows/Linux/Mac/Android
+
+* Train... [Oryx: The ZSA Keyboard Configurator](https://configure.zsa.io/train)
 
 ##### Graphical editor
 
@@ -425,7 +434,6 @@ Keyboard appears 'regular' on Windows/Linux/Mac/Android
 * [Plank](https://configure.zsa.io/planck-ez/layouts/XWllx/latest/0)
 * [Technik](https://github.com/chgeuer/my_qmk_keymaps/blob/main/chgeuer_keyboards/boardsource__technik_o/keymap.c)
 * [Corne](https://github.com/chgeuer/my_qmk_keymaps/blob/main/chgeuer_keyboards/crkbd__rev1/keymap.c)
-* Train... [Oryx: The ZSA Keyboard Configurator](https://configure.zsa.io/train)
 
 #### FEB-15 - Roughly 1 month in
 
@@ -438,13 +446,6 @@ Keyboard appears 'regular' on Windows/Linux/Mac/Android
 ... because some [random guy from the YouTube academy told me so](https://www.youtube.com/watch?v=WVmJrZF9xwk) ...
 
 ![2021-08-24--13-02-36](https://typora.blob.core.windows.net/typoraimages/2021/10/04/18/12/2021-08-24--13-02-36----VP88V15WX4SE3DDHGK7Z6J6ZJG.png)
-
-#### Competitive Learning pages
-
-* [10FastFingers.com](https://10fastfingers.com/)
-* [NitroType.com](https://www.nitrotype.com/race)
-* [TypeRacer.com](https://play.typeracer.com/)
-* Let's play together
 
 #### Youtube Videos
 
