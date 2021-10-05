@@ -368,6 +368,19 @@ blobs
 |> IO.puts()
 ```
 
+### Who's using it already?
+
+- Talk about prod customers of the SDKs
+- SDKs
+  - https://github.com/chgeuer/ex_microsoft_azure_utils
+  - https://github.com/chgeuer/ex_microsoft_azure_storage
+  - https://github.com/chgeuer/ex_microsoft_azure_management_generator
+  - https://github.com/chgeuer/ex_microsoft_azure_management
+
+
+-------------------------
+
+
 ## Damn Meeting Minutes
 
 > How FastTrack job forced me rewire my brain - A geek-out session on Keyboards
