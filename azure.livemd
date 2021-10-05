@@ -1,9 +1,5 @@
 # Talking to Azure Storage and the ARM API - From Erlang
 
-## Section
-
-We'll be using the Elixir programming language, running on the Erlang virtual machine (BEAM), in a docker container, using Elixir's web framework Phoenix, in an application called "LiveBook" ([`livebook-dev/livebook`](https://github.com/livebook-dev/livebook), exposing Elixir through a notebook interface.
-
 ## Just enough Elixir to understand the code
 
 ```elixir
@@ -112,28 +108,8 @@ Many processes are already running on our VM
 ```
 
 ```elixir
-#
-# Check some process info
-#
-management_pid |> Process.info()
-```
-
-```elixir
-#
-# This process is waiting for messages to arrive
-#
-Process.info(management_pid)[:status]
-```
-
-```elixir
-#
-# We can look at it's internal state
-#
-:sys.get_state(management_pid)
-```
-
-```elixir
-management_pid |> DeviceAuthenticator.get_stage()
+management_pid
+|> DeviceAuthenticator.get_stage()
 ```
 
 Start the device code flow.
@@ -155,6 +131,13 @@ alias Microsoft.Azure.ActiveDirectory.DeviceAuthenticator.Model.DeviceCodeRespon
 "Use user code #{uc}"
 ```
 
+Now the underlying Erlang process (actor) is in `:refreshing` state
+
+```elixir
+management_pid
+|> DeviceAuthenticator.get_stage()
+```
+
 ```elixir
 alias Microsoft.Azure.ActiveDirectory.DeviceAuthenticator.Model.TokenResponse
 
@@ -166,18 +149,6 @@ alias Microsoft.Azure.ActiveDirectory.DeviceAuthenticator.Model.TokenResponse
   |> DeviceAuthenticator.get_token()
 
 management_token
-```
-
-```elixir
-#
-# Functional (LINQ-style) navigating through the structure
-#
-
-management_token =
-  management_pid
-  |> DeviceAuthenticator.get_token()
-  |> elem(1)
-  |> Map.get(:access_token)
 ```
 
 ```elixir
@@ -250,13 +221,6 @@ This starts an Erlang process (an 'actor'), which handles the communication with
   |> DeviceAuthenticatorSupervisor.start_link()
 ```
 
-Next, we can send the process behind `storage_pid` a message to tell us the current stage:
-
-```elixir
-storage_pid
-|> DeviceAuthenticator.get_stage()
-```
-
 And give us the device code with which we need to authenticate to AAD ([microsoft.com/devicelogin](https://microsoft.com/devicelogin))
 
 ```elixir
@@ -277,13 +241,6 @@ storage_pid
 ```elixir
 # storage_pid
 # |> DeviceAuthenticator.force_refresh()
-```
-
-When we ask the process for the token, we get a response:
-
-```elixir
-storage_pid
-|> DeviceAuthenticator.get_token()
 ```
 
 ... from which we can extract the token:
@@ -345,7 +302,7 @@ storage = %Storage{
 Given we're running in a Docker container on WSL2, we could still ask the SDK to funnel all outgoing calls through Fiddler on the Windows side.
 
 ```elixir
-"http_proxy" |> System.put_env("192.168.1.10:8888")
+# "http_proxy" |> System.put_env("192.168.1.10:8888")
 
 # "http_proxy" |> System.delete_env()
 ```
@@ -363,20 +320,14 @@ containers
 
 ### Create a new storage container
 
-<!-- livebook:{"livebook_object":"cell_input","name":"Container Name","type":"text","value":"demop12"} -->
+<!-- livebook:{"livebook_object":"cell_input","name":"Container Name","type":"text","value":"demo111"} -->
 
 ```elixir
 container_name = IO.gets("Container Name") |> String.trim()
 
-# storage
-# |> Container.new(container_name)
-# |> Container.create_container()
-```
-
-```elixir
 storage
 |> Container.new(container_name)
-|> Container.set_container_acl_public_access_container()
+|> Container.create_container()
 ```
 
 ```elixir
@@ -402,3 +353,114 @@ blobs
 |> Enum.join("\n")
 |> IO.puts()
 ```
+
+## Damn Meeting Minutes
+
+> How FastTrack job forced me rewire my brain - A geek-out session on Keyboards
+
+#### How I felt in meetings
+
+<img src="https://typora.blob.core.windows.net/typoraimages/2021/10/04/15/37/hunt-and-peck----ZKTMFVVBM12E5A0QKND7DP93V4.jpg" alt="hunt-and-peck" style="zoom: 67%;" />
+
+![hunt-and-peck](https://typora.blob.core.windows.net/typoraimages/2021/10/04/15/37/hunt-and-peck----9B64AN7PF7SYSP3MMVZ7CR2RZG.gif)
+
+#### What I wanted to feel
+
+<img src="https://typora.blob.core.windows.net/typoraimages/2021/10/04/15/38/j7hopjV----756JC3WZ0E1EFZ90VDSR7VX870.gif" alt="Alien typing very fast" style="zoom:150%;" />
+
+#### Touch typing
+
+![touch typing](https://typora.blob.core.windows.net/typoraimages/2021/10/04/20/42/touchtyping----43965SRRDJT0HWADGMJBKXGZVC.png)
+
+#### Diving into the rabbit hole - Layouts
+
+* QWERTY / QWERTZ - My brain accumulated 34 years of bad habits on this
+* [Dvorak](https://en.wikipedia.org/wiki/Dvorak_keyboard_layout) - from 1936. Didn't feel fancy
+* [Workman](https://workmanlayout.org/) - *"... in honor of all who type on keyboards for a living"*
+* [Colemak Mod-DH](https://colemakmods.github.io/mod-dh/keyboards.html)
+* All have Windows Keyboard drivers...
+
+![usage-viz-grid2](https://typora.blob.core.windows.net/typoraimages/2021/10/04/20/58/usage-viz-grid2----07EY79A94KDF7D3JFSRCK2A8GW.png)
+
+#### How many kilometers do your fingers travel?
+
+![Huckleberry finn](https://github.com/kdeloach/workman/raw/gh-pages/images/huck-finn1.png)
+
+#### Learning pages
+
+* [Colemak.Academy](https://colemak.academy/) - Learn your new layout slowly
+* [keybr.com](https://www.keybr.com/) - Grill your weaknesses
+  * sign-in just with a magic link like [`https://www.keybr.com/login/yIkX1rpIDZ`](https://www.keybr.com/login/yIkX1rpIDZ)
+* [Monkeytype.com](https://monkeytype.com/) - More interesting texts, love the "Quote" mode
+
+#### Keyboard configuration
+
+Keyboard appears 'regular' on Windows/Linux/Mac/Android
+
+##### Graphical editor
+
+![image-20211005090744552](https://typora.blob.core.windows.net/typoraimages/2021/10/05/07/07/image-20211005090744552----YB93G89T36REN4BG9X7SYDM8VG.png)
+
+##### C code (QMK firmware)
+
+![image-20211005090705281](https://typora.blob.core.windows.net/typoraimages/2021/10/05/07/07/image-20211005090705281----W802AFXHQZX5RTQE99BJQK4H0R.png)
+
+#### Keyboard forms
+
+* [Moonlander](https://configure.zsa.io/moonlander/layouts/XW33o/latest/0)
+* [Plank](https://configure.zsa.io/planck-ez/layouts/XWllx/latest/0)
+* [Technik](https://github.com/chgeuer/my_qmk_keymaps/blob/main/chgeuer_keyboards/boardsource__technik_o/keymap.c)
+* [Corne](https://github.com/chgeuer/my_qmk_keymaps/blob/main/chgeuer_keyboards/crkbd__rev1/keymap.c)
+* Train... [Oryx: The ZSA Keyboard Configurator](https://configure.zsa.io/train)
+
+#### FEB-15 - Roughly 1 month in
+
+![2021-02-11--23-54-32](https://typora.blob.core.windows.net/typoraimages/2021/10/04/18/08/2021-02-11--23-54-32----ZG2ES857TVYVVF796EQVA8DG2M.png)
+
+![2021-04-21--22-00-39](https://typora.blob.core.windows.net/typoraimages/2021/10/04/20/18/2021-04-21--22-00-39----5HQJ2NAD9ZDJJPA192YGGSJWAG.png)
+
+#### July 17 - The 2nd 'great' reset (Forget "Workman" / Learn "Colemak Mod-DHm")
+
+... because some [random guy from the YouTube academy told me so](https://www.youtube.com/watch?v=WVmJrZF9xwk) ...
+
+![2021-08-24--13-02-36](https://typora.blob.core.windows.net/typoraimages/2021/10/04/18/12/2021-08-24--13-02-36----VP88V15WX4SE3DDHGK7Z6J6ZJG.png)
+
+#### Competitive Learning pages
+
+* [10FastFingers.com](https://10fastfingers.com/)
+* [NitroType.com](https://www.nitrotype.com/race)
+* [TypeRacer.com](https://play.typeracer.com/)
+* Let's play together
+
+#### Youtube Videos
+
+* This catched me: [How I Type REALLY Fast (156 Words per Minute)](https://www.youtube.com/watch?v=1ArVtCQqQRE)
+* [NoThisIsJohn Channel](https://www.youtube.com/c/NoThisIsJohn) - Really crazy speed typing
+* [Ben Vallack Channel](https://www.youtube.com/channel/UC4NNPgQ9sOkBjw6GlkgCylg)
+* [Learning a new Keyboard Layout - Colemak DH](https://www.youtube.com/watch?v=_Y0MT-QR7xg)
+* [Keyboard Layouts - Things to consider before switching ](https://www.youtube.com/watch?v=rhdMVXlnQIM)
+
+#### Excluded from this presentation - Silicone forms and epoxy resin
+
+![PXL_20210328_162819303](https://typora.blob.core.windows.net/typoraimages/2021/10/04/20/45/PXL_20210328_162819303----6HYQ4GJQ2V6J5WG4RQG7BQAS1C.jpg)
+
+![EwIvh0DXcAY84w3](https://typora.blob.core.windows.net/typoraimages/2021/10/04/21/04/EwIvh0DXcAY84w3----2GX4VJJGQVJCTS4CKBA7TC5FDW.jpeg)
+
+![PXL_20210329_181205150](https://typora.blob.core.windows.net/typoraimages/2021/10/04/20/45/PXL_20210329_181205150----AD0WFBSPMYK41SWADMWW8BND2G.jpg)
+
+#### Silencing your keyboard
+
+* Buying silent (non-clickey)
+* Lubing the keys (Crytox ...)
+* [O-Rings](https://switchandclick.com/the-best-o-rings-for-silencing-your-mechanical-keyboard/)
+
+#### The road ahead? Maybe next time
+
+* [Plover](http://www.openstenoproject.org/) and Stenography
+* [Mirabai Knight Channel](https://www.youtube.com/c/MirabaiKnight)
+
+![image-20211004224630033](https://typora.blob.core.windows.net/typoraimages/2021/10/04/20/46/image-20211004224630033----2SD8RP48B67AZ63Z0CF6T191BG.png)
+
+#### News
+
+* [Keyboard Builders' Digest (kbd.news)](https://kbd.news/)
