@@ -131,7 +131,7 @@ alias Microsoft.Azure.ActiveDirectory.DeviceAuthenticator.Model.DeviceCodeRespon
 "Use user code #{uc}"
 ```
 
-Now the underlying Erlang process (actor) is in `:refreshing` state
+Now the underlying Erlang process (actor) is in `:refreshing` state, i.e. it has both an `access_token` and a `refresh_token`, and refreshes the `access_token` as needed.
 
 ```elixir
 management_pid
@@ -167,21 +167,35 @@ IO.puts("https://jwt.ms/#access_token=#{management_token}")
 Now let's create an HTTP client which has our access token:
 
 ```elixir
-conn = management_token |> Microsoft.Azure.Management.Resources.Connection.new()
+conn =
+  management_token
+  |> Microsoft.Azure.Management.Resources.Connection.new()
 ```
+
+Now call the `subscription_list` API, to get a detailed list of subscriptions, 
+and filter for 'our' subscription.
+
+```csharp
+subscriptionName = Console.ReadLine().Trim();
+
+subscriptionID = client
+   .GetSubscriptions()
+   .First(sub => sub.DisplayName == subscriptionName)
+   .SubscriptionID;
+```
+
+<!-- livebook:{"livebook_object":"cell_input","name":"Subscription Name","type":"text","value":"chgeuer-work"} -->
 
 ```elixir
 alias Microsoft.Azure.Management.Subscription.Api.Subscriptions, as: SubscriptionMgmt
 
 IO.puts("Calling the subscription_list, using API version #{api_version.subscription}")
 
-subscriptions =
+subscription_name = IO.gets("Subscription Name") |> String.trim()
+
+{:ok, %{value: subscriptions}} =
   conn
   |> SubscriptionMgmt.subscriptions_list(api_version.subscription)
-  |> elem(1)
-  |> Map.get(:value)
-
-subscription_name = "chgeuer-work"
 
 subscription_id =
   subscriptions
