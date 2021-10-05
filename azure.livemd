@@ -151,6 +151,18 @@ alias Microsoft.Azure.ActiveDirectory.DeviceAuthenticator.Model.TokenResponse
 management_token
 ```
 
+Equivalent C# would be like
+
+```csharp
+Console.WriteLine(
+   String.Join(
+     JWT.Parse(managementToken)
+         .Fields
+         .Select((key, val) => $"{key} {val}")
+         .ToArray()
+     , "\n")); 
+```
+
 ```elixir
 management_token
 |> JOSE.JWT.peek()
@@ -414,6 +426,13 @@ blobs
 * [TypeRacer.com](https://play.typeracer.com/)
 * Let's play together
 
+#### Keyboard forms
+
+* [Moonlander](https://configure.zsa.io/moonlander/layouts/XW33o/latest/0), [Plank](https://configure.zsa.io/planck-ez/layouts/XWllx/latest/0), [Technik](https://github.com/chgeuer/my_qmk_keymaps/blob/main/chgeuer_keyboards/boardsource__technik_o/keymap.c) or [Corne](https://github.com/chgeuer/my_qmk_keymaps/blob/main/chgeuer_keyboards/crkbd__rev1/keymap.c)
+* Train... [Oryx: The ZSA Keyboard Configurator](https://configure.zsa.io/train)
+
+![A couple or ortho-linear keyboards](https://typora.blob.core.windows.net/typoraimages/2021/10/05/09/37/2021-10-05--11-26-37----Y8VYE3Y03B7XWPD0D3QMYSYC54.png)
+
 #### Keyboard configuration
 
 Keyboard appears 'regular' on Windows/Linux/Mac/Android
@@ -427,13 +446,6 @@ Keyboard appears 'regular' on Windows/Linux/Mac/Android
 ##### C code (QMK firmware)
 
 ![image-20211005090705281](https://typora.blob.core.windows.net/typoraimages/2021/10/05/07/07/image-20211005090705281----W802AFXHQZX5RTQE99BJQK4H0R.png)
-
-#### Keyboard forms
-
-* [Moonlander](https://configure.zsa.io/moonlander/layouts/XW33o/latest/0)
-* [Plank](https://configure.zsa.io/planck-ez/layouts/XWllx/latest/0)
-* [Technik](https://github.com/chgeuer/my_qmk_keymaps/blob/main/chgeuer_keyboards/boardsource__technik_o/keymap.c)
-* [Corne](https://github.com/chgeuer/my_qmk_keymaps/blob/main/chgeuer_keyboards/crkbd__rev1/keymap.c)
 
 #### FEB-15 - Roughly 1 month in
 
