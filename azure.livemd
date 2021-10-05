@@ -1,5 +1,7 @@
 # Talking to Azure Storage and the ARM API - From Erlang
 
+## Section
+
 Full demo on Github: [`chgeuer/elixir-livebook-azure-demo`](https://github.com/chgeuer/elixir-livebook-azure-demo)
 
 ## Just enough Elixir to understand the code
@@ -79,7 +81,7 @@ Store a bunch of ARM API versions in a map:
 api_version = %{
   :resource_groups => "2018-02-01",
   :subscription => "2016-06-01",
-  :storage => "2018-02-01"
+  :storage => v
 }
 ```
 
@@ -116,22 +118,25 @@ management_pid
 
 Start the device code flow.
 
-Go to the [microsoft.com/devicelogin](https://microsoft.com/devicelogin)
+Note the pattern matching here, we get a rather complex structure back from 
+`DeviceAuthenticator.get_device_code/1`, but we only care about the user_code
 
 ```elixir
-alias Microsoft.Azure.ActiveDirectory.DeviceAuthenticator.Model.DeviceCodeResponse
-
-#
-# Note the pattern matching here, we get a rather complex structure back from 
-# DeviceAuthenticator.get_device_code/1, but we only care about the user_code
-#
-
-{:ok, %DeviceCodeResponse{user_code: uc}} =
+{:ok, %{user_code: uc}} =
   management_pid
   |> DeviceAuthenticator.get_device_code()
 
 "Use user code #{uc}"
 ```
+
+Initially, Erlang process (actor) is in `:polling` state:
+
+```elixir
+management_pid
+|> DeviceAuthenticator.get_stage()
+```
+
+Now go to the [microsoft.com/devicelogin](https://microsoft.com/devicelogin)
 
 Now the underlying Erlang process (actor) is in `:refreshing` state, i.e. it has both an `access_token` and a `refresh_token`, and refreshes the `access_token` as needed.
 
@@ -140,17 +145,14 @@ management_pid
 |> DeviceAuthenticator.get_stage()
 ```
 
-```elixir
-alias Microsoft.Azure.ActiveDirectory.DeviceAuthenticator.Model.TokenResponse
+After authenticated, we can get the token.
 
-#
-# Binding the management_token value using pattern matching
-#
-{:ok, %TokenResponse{access_token: management_token}} =
+```elixir
+{:ok, %{access_token: management_token}} =
   management_pid
   |> DeviceAuthenticator.get_token()
 
-management_token
+IO.puts("The JWT value is\n#{management_token}")
 ```
 
 Equivalent C# would be like
@@ -203,13 +205,11 @@ subscriptionID = client
 ```elixir
 alias Microsoft.Azure.Management.Subscription.Api.Subscriptions, as: SubscriptionMgmt
 
-IO.puts("Calling the subscription_list, using API version #{api_version.subscription}")
-
 subscription_name = IO.gets("Subscription Name") |> String.trim()
 
 {:ok, %{value: subscriptions}} =
   conn
-  |> SubscriptionMgmt.subscriptions_list(api_version.subscription)
+  |> SubscriptionMgmt.subscriptions_list("2016-06-01")
 
 subscription_id =
   subscriptions
@@ -223,7 +223,7 @@ alias Microsoft.Azure.Management.Storage.Api.StorageAccounts, as: StorageMgmt
 
 {:ok, %{value: accounts}} =
   conn
-  |> StorageMgmt.storage_accounts_list(api_version.storage, subscription_id)
+  |> StorageMgmt.storage_accounts_list("2018-02-01", subscription_id)
 
 accounts
 ```
@@ -258,20 +258,6 @@ And give us the device code with which we need to authenticate to AAD ([microsof
 
 storage_usercode
 ```
-
-Now we should no longer be polling, but be in a constant state of refreshing:
-
-```elixir
-storage_pid
-|> DeviceAuthenticator.get_stage()
-```
-
-```elixir
-# storage_pid
-# |> DeviceAuthenticator.force_refresh()
-```
-
-... from which we can extract the token:
 
 ```elixir
 {:ok, %{access_token: storage_token}} =
@@ -330,9 +316,9 @@ storage = %Storage{
 Given we're running in a Docker container on WSL2, we could still ask the SDK to funnel all outgoing calls through Fiddler on the Windows side.
 
 ```elixir
-# "http_proxy" |> System.put_env("192.168.1.10:8888")
+# System.put_env("http_proxy", "192.168.1.10:8888")
 
-# "http_proxy" |> System.delete_env()
+# System.delete_env("http_proxy")
 ```
 
 ### List storage containers
